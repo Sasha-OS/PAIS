@@ -33,7 +33,15 @@ class Ship:
         self.cool_down_counter = 0
 
     def draw(self, window):
-        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y, 50, 50))
+        window.blit(self.ship_img , (self.x, self.y))
+
+class Player(Ship):
+    def __init__(self, x, y, health=100):
+        super().__init__(x, y, health)
+        self.ship_img = SHIP_RED
+        self.projectile_img = RED_PROJECTILE
+        self.mask = pygame.mask.from_surface(self.ship_img)
+        self.max_health = health
 
 def main():
     run = True
@@ -44,7 +52,7 @@ def main():
     main_font = pygame.font.SysFont("comicsans", 40)
     FPS = 60
 
-    ship = Ship(300, 650)
+    player = Player(300, 650)
 
     clock = pygame.time.Clock()
 
@@ -60,7 +68,7 @@ def main():
         WINDOW.blit(level_label, (10, 10))
         WINDOW.blit(kills_label, (10, 50))
         WINDOW.blit(lives_label, (WIDTH - level_label.get_width() - 10, 10))
-        ship.draw(WINDOW)
+        player.draw(WINDOW)
 
         pygame.display.update()
 
@@ -72,13 +80,13 @@ def main():
                 run = False
         #moving
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]: #left
-            ship.x -= player_speed
-        if keys[pygame.K_d]: #right
-            ship.x += player_speed
-        if keys[pygame.K_w]: #up
-            ship.y -= player_speed
-        if keys[pygame.K_s]: #down
-            ship.y += player_speed
+        if keys[pygame.K_a] and player.x - player_speed > 0: #left
+            player.x -= player_speed
+        if keys[pygame.K_d] and player.x + player_speed + 50 < WIDTH: #right
+            player.x += player_speed
+        if keys[pygame.K_w] and player.y - player_speed > 0: #up
+            player.y -= player_speed
+        if keys[pygame.K_s] and player.y + player_speed + 50 < HEIGHT: #down
+            player.y += player_speed
 
 main()
