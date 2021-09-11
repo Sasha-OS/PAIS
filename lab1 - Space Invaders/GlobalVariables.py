@@ -14,6 +14,7 @@ ProjectileClass = ProjectileClass
 
 WIDTH, HEIGHT = 750, 750
 kills = 0
+lost = False
 lost_count = 0
 level = 0
 lives = 3
@@ -23,6 +24,7 @@ projectile_speed = 3
 FPS = 60
 enemies = []
 wave_length = 5
+
 
 PG_LIB.font.init()
 main_font = pygame.font.SysFont("comicsans", 40)

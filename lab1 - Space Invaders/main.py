@@ -2,12 +2,9 @@ import GlobalVariables as GV
 
 
 def main():
-    GV.PG_LIB.display.set_caption("Space Invaders")
-    clock = GV.PG_LIB.time.Clock()
-    main_font = GV.PG_LIB.font.SysFont("comicsans", 40)
-    lost_font = GV.PG_LIB.font.SysFont("comicsans", 60)
     run = True
-    lost = False
+    clock = GV.PG_LIB.time.Clock()
+    GV.PG_LIB.display.set_caption("Space Invaders")
 
     def redraw_window():
         GV.WINDOW.blit(GV.BACKGROUND, (0,0))
@@ -22,7 +19,7 @@ def main():
         for enemy in GV.enemies:
             enemy.draw(GV.WINDOW)
 
-        if lost:
+        if GV.lost:
             lost_label = GV.lost_font.render("You lost...", 1, (255, 10, 10))
             GV.WINDOW.blit(lost_label, (GV.WIDTH/2 - lost_label.get_width()/2, 350))
 
@@ -35,10 +32,10 @@ def main():
         clock.tick(GV.FPS)
         redraw_window()
         if GV.lives <= 0 or GV.player.health <= 0:
-            lost = True
-            GV.lost_count +=1
+            GV.lost = True
+            GV.lost_count += 1
 
-        if lost:
+        if GV.lost:
             if GV.lost_count > GV.FPS * 3:
                 run = False
             else:
@@ -49,11 +46,11 @@ def main():
             GV.wave_length += 5
             #spawn enemies
             for i in range(GV.wave_length):
-                enemy = GV.SC.Enemy(GV.RANDOM_LIB.randrange(100, GV.WIDTH-100), GV.RANDOM_LIB.randrange(-1500, -100), GV.RANDOM_LIB.choice(["red", "blue", "green"]))
+                enemy = GV.SC.Enemy(GV.random.randrange(100, GV.WIDTH-100), GV.random.randrange(-1500, -100), GV.random.choice(["red", "blue", "green"]))
                 GV.enemies.append(enemy)
         for event in GV.PG_LIB.event.get():
             if event.type == GV.PG_LIB.QUIT:
-                quit()
+                run = False
         #moving
         keys = GV.PG_LIB.key.get_pressed()
         if keys[GV.PG_LIB.K_a] and GV.player.x - GV.player_speed > 0: #left
@@ -84,6 +81,8 @@ def main():
                 GV.lives -= 1
                 GV.enemies.remove(enemy)
         GV.player.move_projectiles(-GV.projectile_speed, GV.enemies)
+
+        redraw_window()
 
 def main_menu():
     title_font = GV.PG_LIB.font.SysFont("comicsans", 70)
