@@ -13,3 +13,12 @@ class Asteroid:
 
     def move(self, speed):
         self.y += speed
+
+class Pixel:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pixel_img = GV.WAY
+
+    def draw(self):  # створення човна
+        GV.WINDOW.blit(self.pixel_img, (self.x, self.y))

@@ -5,6 +5,7 @@ import random
 import ShipClass as SC
 import ProjectileClass
 import AsteroidClass
+import numpy
 
 OS_LIB = os
 PG_LIB = pygame
@@ -46,6 +47,8 @@ RED_PROJECTILE = pygame.image.load(os.path.join("assets", "red_projectile.png"))
 YELLOW_PROJECTILE = pygame.image.load(os.path.join("assets", "yellow_projectile.png"))
 GREEN_PROJECTILE = pygame.image.load(os.path.join("assets", "green_projectile.png"))
 ASTEROID_PICTURE = pygame.transform.scale(pygame.image.load(os.path.join("assets", "asteroid.png")), (30, 30))
+PIXELPOINT = PG_LIB.transform.scale(PG_LIB.image.load(os.path.join("assets", "pixel.png")), (10, 10))
+WAY = PG_LIB.transform.scale(PG_LIB.image.load(os.path.join("assets", "unknown.png")), (15, 15))
 
 COLOR_MAP = {
         "red": (SHIP_RED, RED_PROJECTILE),
@@ -54,3 +57,15 @@ COLOR_MAP = {
     }
 
 player = SC.Player(300, 650)
+
+currPoint = [player.x/150, player.y/150]
+dfsArrayOfPath = []
+bfsArrayOfPath = []
+End = False
+path = []
+VisitMatrix = numpy.full((int(WIDTH / 50), int(HEIGHT / 50)), 0)
+findedPoints = []
+enemyCount = 0
+currAlg = "ucs"
+pixelPath = []
+work = True
