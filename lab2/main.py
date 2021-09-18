@@ -1,6 +1,8 @@
 import GlobalVariables as GV
 import Algorytms
 import time
+import numpy
+import math
 
 
 def main():
@@ -84,6 +86,28 @@ def main():
              elif GV.currAlg == "ucs":
                 print("current alg dfs")
                 GV.currAlg = "dfs"
+             Algorytms.arrOfPath = []
+             Algorytms.arrOfList = []
+             Algorytms.listOfVisited = []
+             Algorytms.matrix = numpy.full((int(750 / 50), int(750 / 50)), 0)
+             Algorytms.visitMatrix = numpy.full((int(750 / 50), int(750 / 50)), 0)
+             Algorytms.path = [[math.ceil(int(GV.player.x / 50)), math.ceil(int(GV.player.y / 50))]]
+             Algorytms.numofEnemy = 1  # TODO: get num from matrix
+             Algorytms.arrOfPath = []
+             Algorytms.listOfVisited = [[math.ceil(int(GV.player.x / 50)), math.ceil(int(GV.player.y / 50))]]
+             Algorytms.arrOfList = []
+             Algorytms.arrBeforePath = []
+             Algorytms.ucsListOfVisited = [[math.ceil(int(GV.player.x / 50)), math.ceil(int(GV.player.y / 50))]]
+             Algorytms.lenMatrix = numpy.full((int(750 / 50), int(750 / 50)), 0)
+             Algorytms.ucsList = []
+             Algorytms.arrUcsList = []
+             Algorytms.enemyCoords = []
+             if len(Algorytms.path) > 1:
+                GV.pixelPath = []
+             if len(Algorytms.listOfVisited) > 1:
+                GV.pixelPath = []
+
+
         if keys[GV.PG_LIB.K_x]:
             if GV.work == True:
                 Algorytms.createStartMatrix()
@@ -104,6 +128,13 @@ def main():
                         print(*i)
                     print("--- %s seconds ---" % (time.time() - start_time))
 
+                    if len(Algorytms.path) > 0:
+                        GV.pixelPath = []
+                        for i in Algorytms.path:
+                            pix = GV.AsteroidClass.Pixel(int(i[1] * 50), int(i[0] * 50))
+                            GV.pixelPath.append(pix)
+
+
                 if GV.currAlg == "bfs":
                     start_time = time.time()
                     GV.work = False
@@ -114,7 +145,7 @@ def main():
                             # print(arrBeforePath)
                             Algorytms.arrOfList.append(Algorytms.arrBeforePath)
                             Algorytms.arrOfList.append(Algorytms.listOfVisited)
-                            listOfVisited = [Algorytms.arrOfList[0][0]]
+                            #listOfVisited = [Algorytms.arrOfList[0][0]]
                             Algorytms.numofEnemy -= 1
                             Algorytms.createVisitMatrix(Algorytms.matrix, Algorytms.visitMatrix)
                         Algorytms.bfs(Algorytms.matrix, Algorytms.visitMatrix)
@@ -122,6 +153,12 @@ def main():
                     for i in Algorytms.arrOfList:
                         print(*i)
                     print("--- %s seconds ---" % (time.time() - start_time))
+
+                    if len(Algorytms.listOfVisited) > 0:
+                        GV.pixelPath = []
+                        for i in Algorytms.listOfVisited:
+                            pix = GV.AsteroidClass.Pixel(int(i[0] * 50), int(i[1] * 50))
+                            GV.pixelPath.append(pix)
 
                 if GV.currAlg == "ucs":
                     start_time = time.time()
@@ -148,17 +185,18 @@ def main():
                         minimum = 10000
                         next = []
                         while minimum != 1:
-                            Algorytms.ucsList.append(curr)
-                            if curr[0] - 1 >= 0 and 0 < Algorytms.lenMatrix[curr[0] - 1][curr[1]] < minimum:
+                            if curr:
+                                Algorytms.ucsList.append(curr)
+                            if curr and curr[0] - 1 >= 0 and 0 < Algorytms.lenMatrix[curr[0] - 1][curr[1]] < minimum:
                                 minimum = Algorytms.lenMatrix[curr[0] - 1][curr[1]]
                                 next = [curr[0] - 1, curr[1]]
-                            if curr[1] - 1 >= 0 and 0 < Algorytms.lenMatrix[curr[0]][curr[1] - 1] < minimum:
+                            if curr and curr[1] - 1 >= 0 and 0 < Algorytms.lenMatrix[curr[0]][curr[1] - 1] < minimum:
                                 minimum = Algorytms.lenMatrix[curr[0]][curr[1] - 1]
                                 next = [curr[0], curr[1] - 1]
-                            if curr[0] + 1 < 15 and 0 < Algorytms.lenMatrix[curr[0] + 1][curr[1]] < minimum:
+                            if curr and curr[0] + 1 < 15 and 0 < Algorytms.lenMatrix[curr[0] + 1][curr[1]] < minimum:
                                 minimum = Algorytms.lenMatrix[curr[0] + 1][curr[1]]
                                 next = [curr[0] + 1, curr[1]]
-                            if curr[1] + 1 < 15 and 0 < Algorytms.lenMatrix[curr[0]][curr[1] + 1] < minimum:
+                            if curr and curr[1] + 1 < 15 and 0 < Algorytms.lenMatrix[curr[0]][curr[1] + 1] < minimum:
                                 minimum = Algorytms.lenMatrix[curr[0]][curr[1] + 1]
                                 next = [curr[0], curr[1] + 1]
                             curr = next
@@ -169,27 +207,17 @@ def main():
                     # print(arrUcsList)
                     print("Distance matrix")
 
-
                     print("path to enemies:")
                     for i in Algorytms.arrUcsList:
                         print(*i)
 
-                    if len(Algorytms.path) > 0:
-                        GV.pixelPath = []
-                        for i in Algorytms.path:
-                            pix = GV.AsteroidClass.Pixel(int(i[0] * 50), int(i[1] * 50))
-                            GV.pixelPath.append(pix)
 
-                    if len(Algorytms.listOfVisited) > 0:
-                        GV.pixelPath = []
-                        for i in Algorytms.listOfVisited:
-                            pix = GV.AsteroidClass.Pixel(int(i[0] * 50), int(i[1] * 50))
-                            GV.pixelPath.append(pix)
 
-                    if len(Algorytms.ucsListOfVisited) > 0:
+
+                    if len(Algorytms.arrUcsList) > 0:
                         GV.pixelPath = []
-                        for i in Algorytms.ucsListOfVisited:
-                            pix = GV.AsteroidClass.Pixel(int(i[0] * 50), int(i[1] * 50))
+                        for i in Algorytms.arrUcsList:
+                            pix = GV.AsteroidClass.Pixel(int(i[1] * 50), int(i[0] * 50))
                             GV.pixelPath.append(pix)
 
         for enemy in GV.enemies[:]:
@@ -216,6 +244,8 @@ def main():
             if GV.ProjectileClass.collide(asteroid, GV.player):
                 GV.player.health -= 10
                 GV.asteroids.remove(asteroid)
+
+
 
         redraw_window()
 

@@ -1,5 +1,6 @@
 import GlobalVariables as gv
 import numpy
+import math
 
 # empty = 0
 # current = 1
@@ -8,13 +9,13 @@ import numpy
 
 matrix = numpy.full((int(750 / 50), int(750 / 50)), 0)
 visitMatrix = numpy.full((int(750 / 50), int(750 / 50)), 0)
-path = [[7, 14]]
+path = [[math.ceil(int(gv.player.x/50)), math.ceil(int(gv.player.y/50))]]
 numofEnemy = 1 # TODO: get num from matrix
 arrOfPath = []
-listOfVisited = [[7, 14]]
+listOfVisited = [[math.ceil(int(gv.player.x/50)), math.ceil(int(gv.player.y/50))]]
 arrOfList = []
 arrBeforePath = []
-ucsListOfVisited = [[14, 6]]
+ucsListOfVisited = [[math.ceil(int(gv.player.x/50)), math.ceil(int(gv.player.y/50))]]
 lenMatrix = numpy.full((int(750 / 50), int(750 / 50)), 0)
 ucsList = []
 arrUcsList = []
@@ -23,17 +24,13 @@ enemyCoords = []
 
 def createStartMatrix():
     for i in gv.asteroids:
-        for j in range(int((i.x - 20) / 50), int((i.x + 20) / 50)):
-            for k in range(int((i.y - 20) / 50), int((i.y + 20) / 50)):
-                if 0 < j < len(matrix) and 0 < k < len(matrix):
-                    matrix[k][j] = 3
-                    gv.VisitMatrix[k][j] = 1
+                if 0 < int(i.x/50 )< len(matrix) and 0 < int(i.y/50) < len(matrix):
+                    matrix[math.ceil(int(i.y/50))][math.ceil(int(i.x/50))] = 3
+                    gv.VisitMatrix[math.ceil(int(i.y/50))][math.ceil(int(i.x/50))] = 1
     for i in gv.enemies:
-        for j in range(int((i.x - 20) / 50), int((i.x + 20) / 50)):
-            for k in range(int((i.y - 20) / 50), int((i.y + 20) / 50)):
-                if 0 < j < len(matrix) and 0 < k < len(matrix):
-                    matrix[k][j] = 2
-                    gv.VisitMatrix[k][j] = 1
+                if 0 < int(i.x/50) < len(matrix) and 0 < int(i.y/50) < len(matrix):
+                    matrix[math.ceil(int(i.y/50))][math.ceil(int(i.x/50))] = 2
+                    gv.VisitMatrix[math.ceil(int(i.y/50))][math.ceil(int(i.x/50))] = 1
 
     # global numofEnemy, path
     # for i in matrix:
@@ -212,4 +209,3 @@ def findEnemyCoords(matrix):
         for j in range(len(matrix[i])):
             if matrix[i][j] == 2:
                 enemyCoords.append([i, j])
-
