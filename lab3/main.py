@@ -56,9 +56,9 @@ def main():
             for i in range(GV.wave_length):
                 enemy = GV.SC.Enemy(GV.random.randrange(100, GV.WIDTH-150), GV.random.randrange(-1500, -100), GV.random.choice(["red", "blue", "green"]))
                 GV.enemies.append(enemy)
-            # for i in range(GV.wave_length + 10):
-            #     asteroid = GV.AsteroidClass.Asteroid(GV.random.randrange(100, GV.WIDTH-100), GV.random.randrange(-1500, -100))
-            #     GV.asteroids.append(asteroid)
+            for i in range(GV.wave_length):
+                asteroid = GV.AsteroidClass.Asteroid(GV.random.randrange(100, GV.WIDTH-100), GV.random.randrange(-1500, -100))
+                GV.asteroids.append(asteroid)
 
         for event in GV.PG_LIB.event.get():
             if event.type == GV.PG_LIB.QUIT:
@@ -110,11 +110,11 @@ def main():
         #     print(*i)
         while Algorytms.enemyArray:
             Algorytms.emptyMatrix(Algorytms.lenMatrix, Algorytms.startPoint)
-            Algorytms.markThree(Algorytms.matrix)
+            Algorytms.findAsteroids(Algorytms.matrix)
             for i in Algorytms.matrix:
                 print(*i)
             Algorytms.path = []
-            Algorytms.astar(Algorytms.curr)
+            Algorytms.main_alg(Algorytms.curr)
 
             Algorytms.enemyArray.remove(Algorytms.enemyArray[0])
             Algorytms.arrayOfPath.append(Algorytms.path)
@@ -129,33 +129,30 @@ def main():
         Algorytms.matrix = Algorytms.numpy.full((int(750 / 50), int(750 / 50)), 0)
         if GV.player and Algorytms.arrayOfPath:
             if len(Algorytms.arrayOfPath[0]) > 1:
-                # if not GV.player.y == Algorytms.arrayOfPath[0][1][0]:
-                #     GV.player.y = Algorytms.arrayOfPath[0][1][0] * 30
-                #     Algorytms.curr = [Algorytms.arrayOfPath[0][1][0], int(GV.player.x / 50)]
                 if not GV.player.x == Algorytms.arrayOfPath[0][1][1]:
                     GV.player.x = Algorytms.arrayOfPath[0][1][1] * 50
                     Algorytms.curr = [int(GV.player.y / 50), Algorytms.arrayOfPath[0][1][1]]
                     Algorytms.startPoint = [int(GV.player.y / 50), Algorytms.arrayOfPath[0][1][1]]
+
+                # if not GV.player.y == int(Algorytms.arrayOfPath[0][1][0] - 400):
+                #     GV.player.y = Algorytms.arrayOfPath[0][1][0] * 50
+                #     Algorytms.curr = [math.ceil(int(GV.player.y / 50 )), int(GV.player.x / 50)]
+            print(Algorytms.arrayOfPath)
             Algorytms.arrayOfPath = []
             for i in GV.enemies:
-
-                if Algorytms.lenToFromPointtoPoint([int(GV.player.y / 50), int(GV.player.x / 50)],
+                # remove enemy
+                if Algorytms.distanceBetweenPoints([int(GV.player.y / 50), int(GV.player.x / 50)],
                                                    [int(i.y / 50), int(i.x / 50)]) < 3:
                     GV.enemies.remove(i)
                     if [int(i.y / 50), int(i.x / 50)] in Algorytms.enemyArray:
                         Algorytms.enemyArray.remove([int(i.y / 50), int(i.x / 50)])
                     if [int(i.x / 50), int(i.y / 50)] in Algorytms.enemyArray:
                         Algorytms.enemyArray.remove([int(i.x / 50), int(i.y / 50)])
-                    # gv.GOOD_SHIP.x = Algorytms.pointToResp[1]
-                    # gv.GOOD_SHIP.y = Algorytms.pointToResp[0]
+
                     Algorytms.enemyArray = []
                     Algorytms.arrayOfPath = []
                     Algorytms.createVisitMatrix(Algorytms.matrix)
                     Algorytms.fillMatrix(Algorytms.matrix)
-            if GV.RANDOM_LIB.randrange(1, 200) == 1:
-                GV.currPoint = [int(Algorytms.pointToResp[1] / 50), int(Algorytms.pointToResp[0] / 50)]
-                Algorytms.startPoint = [int(Algorytms.pointToResp[1] / 50), int(Algorytms.pointToResp[0] / 50)]
-        # print(len(Algorytms.arrayOfPath))
 
         Algorytms.dodge()
         redraw_window()

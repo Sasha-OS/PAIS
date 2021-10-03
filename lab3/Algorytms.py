@@ -16,6 +16,21 @@ curr = [13, 7]
 enemyArray = []
 arrayOfPath = []
 
+def findAsteroids(matr):
+    for i in range(0, len(matr)):
+        for j in range(0, len(matr[i])):
+            if matr[i][j] == 3:
+                lenMatrix[i][j] = 999
+
+
+def fillMatrix(matrix):
+    for i in gv.enemies:
+        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
+            matrix[int(i.y / 50)][int(i.x / 50)] = 2
+    for i in gv.asteroids:
+        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
+            matrix[int(i.y / 50)][int(i.x / 50)] = 3
+
 def createVisitMatrix(matrix):
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
@@ -33,7 +48,8 @@ def emptyMatrix(matr, cur):
     #     print(*i)
 #TODO: add baricades(3)
 
-def lenToFromPointtoPoint(cur, startPoiint):
+#distance between points
+def distanceBetweenPoints(cur, startPoiint):
     distance = 0
     if cur[0] > startPoiint[0]:
         distance += cur[0] - startPoiint[0]
@@ -47,14 +63,12 @@ def lenToFromPointtoPoint(cur, startPoiint):
 
 
 def lenFinal(curr):
-    return lenToFromPointtoPoint(curr, startPoint) + lenToFromPointtoPoint(curr, enemyArray[0]) * 10
+    return distanceBetweenPoints(curr, startPoint) + distanceBetweenPoints(curr, enemyArray[0]) * 2
 
 
-# print(lenToFromPointtoPoint([12, 5], [1, 7]))
-# print(enemyArray)
 
 
-def isEnemyClose(cur):
+def gotEnemy(cur):
     if 0 <= cur[0] + 1 < 15 and 0 <= cur[1] + 1 < 15 and lenMatrix[cur[0] + 1][cur[1] + 1] == -1:
         return True
     elif 0 <= cur[0] - 1 < 15 and 0 <= cur[1] - 1 < 15 and lenMatrix[cur[0] - 1][cur[1] - 1] == -1:
@@ -75,24 +89,24 @@ def isEnemyClose(cur):
         return False
 
 
-def markPoints(cur):
-    if 0 < cur[0] + 1 < len(lenMatrix) and 0 < cur[1] + 1 < len(lenMatrix) and not lenMatrix[cur[0] + 1][cur[1] + 1] == 999:
+def setWay(cur):
+    if 0 < cur[0] + 1 < len(lenMatrix) and 0 < cur[1] + 1 < len(lenMatrix) and not lenMatrix[cur[0] + 1][cur[1] + 1] == 300:
         lenMatrix[cur[0] + 1][cur[1] + 1] = lenFinal([cur[0] + 1, cur[1] + 1])
-    if 0 < cur[0] - 1 < len(lenMatrix) and 0 < cur[1] - 1 < len(lenMatrix) and not lenMatrix[cur[0] - 1][cur[1] - 1] == 999:
+    if 0 < cur[0] - 1 < len(lenMatrix) and 0 < cur[1] - 1 < len(lenMatrix) and not lenMatrix[cur[0] - 1][cur[1] - 1] == 300:
         lenMatrix[cur[0] - 1][cur[1] - 1] = lenFinal([cur[0] - 1, cur[1] - 1])
-    if 0 < cur[0] + 1 < len(lenMatrix) and 0 < cur[1] - 1 < len(lenMatrix) and not lenMatrix[cur[0] + 1][cur[1] - 1] == 999:
+    if 0 < cur[0] + 1 < len(lenMatrix) and 0 < cur[1] - 1 < len(lenMatrix) and not lenMatrix[cur[0] + 1][cur[1] - 1] == 300:
         lenMatrix[cur[0] + 1][cur[1] - 1] = lenFinal([cur[0] + 1, cur[1] - 1])
-    if 0 < cur[0] - 1 < len(lenMatrix) and 0 < cur[1] + 1 < len(lenMatrix) and not lenMatrix[cur[0] - 1][cur[1] + 1] == 999:
+    if 0 < cur[0] - 1 < len(lenMatrix) and 0 < cur[1] + 1 < len(lenMatrix) and not lenMatrix[cur[0] - 1][cur[1] + 1] == 300:
         lenMatrix[cur[0] - 1][cur[1] + 1] = lenFinal([cur[0] - 1, cur[1] + 1])
-    if 0 < cur[0] < len(lenMatrix) and 0 < cur[1] + 1 < len(lenMatrix) and not lenMatrix[cur[0]][cur[1] + 1] == 999:
+    if 0 < cur[0] < len(lenMatrix) and 0 < cur[1] + 1 < len(lenMatrix) and not lenMatrix[cur[0]][cur[1] + 1] == 300:
         lenMatrix[cur[0]][cur[1] + 1] = lenFinal([cur[0], cur[1] + 1])
-    if 0 < cur[0] + 1 < len(lenMatrix) and 0 < cur[1] < len(lenMatrix) and not lenMatrix[cur[0] + 1][cur[1]] == 999:
+    if 0 < cur[0] + 1 < len(lenMatrix) and 0 < cur[1] < len(lenMatrix) and not lenMatrix[cur[0] + 1][cur[1]] == 300:
         lenMatrix[cur[0] + 1][cur[1]] = lenFinal([cur[0] + 1, cur[1]])
-    if 0 < cur[0] < len(lenMatrix) and 0 < cur[1] - 1 < len(lenMatrix) and not lenMatrix[cur[0]][cur[1] - 1] == 999:
+    if 0 < cur[0] < len(lenMatrix) and 0 < cur[1] - 1 < len(lenMatrix) and not lenMatrix[cur[0]][cur[1] - 1] == 300:
         lenMatrix[cur[0]][cur[1] - 1] = lenFinal([cur[0], cur[1] - 1])
-    if 0 < cur[0] - 1 < len(lenMatrix) and 0 < cur[1] < len(lenMatrix) and not lenMatrix[cur[0] - 1][cur[1]] == 999:
+    if 0 < cur[0] - 1 < len(lenMatrix) and 0 < cur[1] < len(lenMatrix) and not lenMatrix[cur[0] - 1][cur[1]] == 300:
         lenMatrix[cur[0] - 1][cur[1]] = lenFinal([cur[0] - 1, cur[1]])
-    if 0 < cur[0] < len(lenMatrix) and 0 < cur[1] < len(lenMatrix) and not lenMatrix[cur[0]][cur[1]] == 999:
+    if 0 < cur[0] < len(lenMatrix) and 0 < cur[1] < len(lenMatrix) and not lenMatrix[cur[0]][cur[1]] == 300:
         lenMatrix[cur[0]][cur[1]] = lenFinal([cur[0], cur[1]])
 
 def dodge():
@@ -113,8 +127,8 @@ def dodge():
     createVisitMatrix(matrix)
     fillMatrix(matrix)
 
-def getCoordsOfSmallest(matrix):
-    value = 9999
+def chooseSmall(matrix):
+    value = 1000
     currentVay = []
     for i in range(0, len(matrix)):
         for j in range(0, len(matrix[i])):
@@ -125,26 +139,14 @@ def getCoordsOfSmallest(matrix):
     return currentVay
 
 
-def astar(curr):
+def main_alg(curr):
     lenMatrix[enemyArray[0][0]][enemyArray[0][1]] = -1
-    if not isEnemyClose(curr):
-        markPoints(curr)
+    if not gotEnemy(curr):
+        setWay(curr)
         path.append(curr)
-        curr = getCoordsOfSmallest(lenMatrix)
+        curr = chooseSmall(lenMatrix)
         #print(curr)
-        astar(curr)
+        main_alg(curr)
 
-def markThree(matr):
-    for i in range(0, len(matr)):
-        for j in range(0, len(matr[i])):
-            if matr[i][j] == 3:
-                lenMatrix[i][j] = 999
-
-
-def fillMatrix(matrix):
-    for i in gv.enemies:
-        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
-            matrix[int(i.y / 50)][int(i.x / 50)] = 2
-    for i in gv.asteroids:
-        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
-            matrix[int(i.y / 50)][int(i.x / 50)] = 3
+def round50(n):
+    return round(n * 2, -2) // 2
