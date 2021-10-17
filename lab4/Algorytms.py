@@ -44,7 +44,7 @@ class Node():
         self.point = num
 
 
-def emtyVisitMatrix():
+def fill0():
     for i in range(0, len(visited)):
         for j in range(0, len(visited[i])):
             visited[i][j] = 0
@@ -90,96 +90,6 @@ def getNearNodes(coords=None):
         for i in ans:
             buffer.append(Node(matrix[i[0]][i[1]], [i[0], i[1]]))
         return buffer
-
-
-class Tree:
-    startNode = Node(1, getStartCoords(), getNearNodes())
-    current = startNode
-    before = []
-
-    def createTree(self):
-        for i in self.current.nodes:
-            self.before = self.current
-            self.current.father = self.before
-            self.current = i
-            self.current.nodes = getNearNodes(self.current.coords)
-            if self.current.nodes:
-                self.createTree(self)
-
-    def isUnvisited(self):
-        if self.current.nodes:
-            for i in self.current.nodes:
-                if visited[i.coords[0]][i.coords[1]] == 1:
-                    return False
-        return True
-
-    def setPriceInTree(self):
-        global max
-        checker = True
-        if self.current.nodes and self.isUnvisited(self):
-            for i in self.current.nodes:
-                if matrix[i.coords[0]][i.coords[1]] >= matrix[self.current.coords[0]][self.current.coords[1]] + \
-                        self.current.coords[0] * self.current.coords[1]:
-                    matrix[i.coords[0]][i.coords[1]] = 0
-                    checker = False
-                if not [i.coords[0], i.coords[1]] in enemies and checker:
-                    if max and matrix[i.coords[0]][i.coords[1]] != 2:
-                        matrix[i.coords[0]][i.coords[1]] += (
-                                matrix[self.current.coords[0]][self.current.coords[1]] + self.current.coords[0] *
-                                self.current.coords[1])
-                    elif matrix[i.coords[0]][i.coords[1]] != 2:
-                        matrix[i.coords[0]][i.coords[1]] += (
-                                matrix[self.current.coords[0]][self.current.coords[1]] + self.current.coords[0] *
-                                self.current.coords[1])
-                if visited[i.coords[0]][i.coords[1]] != 1:
-                    self.before = self.current
-                    self.current = i
-                    visited[self.current.coords[0]][self.current.coords[1]] = 1
-                    if max:
-                        max = False
-                    else:
-                        max = True
-                    self.setPriceInTree(self)
-        else:
-            if max:
-                max = False
-            else:
-                max = True
-            self.current = self.before
-            checker = True
-            # print(self.current.point)
-
-            # print(self.current.point)
-
-
-def createVisitMatrix(matrix):
-    global enemyArray
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            if matrix[i][j] == 2:
-                enemyArray.append([i, j])
-    if enemyArray:
-        enemyArray = [i for n, i in enumerate(enemyArray) if i not in enemyArray[:n]]
-
-
-def emptyMatrix(matr, cur):
-    for i in range(0, len(matr)):
-        for j in range(0, len(matr[i])):
-            if not matr[i][j] == 0:
-                matr[i][j] = 0
-    matr[cur[0]][cur[1]] = 1
-    # for i in matr:
-    #     print(*i)
-
-
-def fillMatrix(matrix):
-    for i in gv.enemies:
-        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
-            matrix[int(i.y / 50)][int(i.x / 50)] = 2
-    for i in gv.asteroids:
-        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
-            matrix[int(i.y / 50)][int(i.x / 50)] = 3
-
 
 def moveEnemy():
     global arrayOfPath
@@ -236,3 +146,92 @@ def moveEnemy():
     arrayOfPath = []
     createVisitMatrix(matrix)
     fillMatrix(matrix)
+
+
+class Tree:
+    startNode = Node(1, getStartCoords(), getNearNodes())
+    current = startNode
+    before = []
+
+    def createTree(self):
+        for i in self.current.nodes:
+            self.before = self.current
+            self.current.father = self.before
+            self.current = i
+            self.current.nodes = getNearNodes(self.current.coords)
+            if self.current.nodes:
+                self.createTree(self)
+
+    def Unvisited(self):
+        if self.current.nodes:
+            for i in self.current.nodes:
+                if visited[i.coords[0]][i.coords[1]] == 1:
+                    return False
+        return True
+
+    def setRate(self):
+        global max
+        checker = True
+        if self.current.nodes and self.Unvisited(self):
+            for i in self.current.nodes:
+                if matrix[i.coords[0]][i.coords[1]] >= matrix[self.current.coords[0]][self.current.coords[1]] + \
+                        self.current.coords[0] * self.current.coords[1]:
+                    matrix[i.coords[0]][i.coords[1]] = 0
+                    checker = False
+                if not [i.coords[0], i.coords[1]] in enemies and checker:
+                    if max and matrix[i.coords[0]][i.coords[1]] != 2:
+                        matrix[i.coords[0]][i.coords[1]] += (
+                                matrix[self.current.coords[0]][self.current.coords[1]] + self.current.coords[0] *
+                                self.current.coords[1])
+                    elif matrix[i.coords[0]][i.coords[1]] != 2:
+                        matrix[i.coords[0]][i.coords[1]] += (
+                                matrix[self.current.coords[0]][self.current.coords[1]] + self.current.coords[0] *
+                                self.current.coords[1])
+                if visited[i.coords[0]][i.coords[1]] != 1:
+                    self.before = self.current
+                    self.current = i
+                    visited[self.current.coords[0]][self.current.coords[1]] = 1
+                    if max:
+                        max = False
+                    else:
+                        max = True
+                    self.setRate(self)
+        else:
+            if max:
+                max = False
+            else:
+                max = True
+            self.current = self.before
+            checker = True
+            # print(self.current.point)
+
+            # print(self.current.point)
+
+
+def createVisitMatrix(matrix):
+    global enemyArray
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == 2:
+                enemyArray.append([i, j])
+    if enemyArray:
+        enemyArray = [i for n, i in enumerate(enemyArray) if i not in enemyArray[:n]]
+
+
+def emptyMatrix(matr, cur):
+    for i in range(0, len(matr)):
+        for j in range(0, len(matr[i])):
+            if not matr[i][j] == 0:
+                matr[i][j] = 0
+    matr[cur[0]][cur[1]] = 1
+    # for i in matr:
+    #     print(*i)
+
+
+def fillMatrix(matrix):
+    for i in gv.enemies:
+        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
+            matrix[int(i.y / 50)][int(i.x / 50)] = 2
+    for i in gv.asteroids:
+        if 0 < int(i.y / 50) < 15 and 0 < int(i.x / 50) < 15:
+            matrix[int(i.y / 50)][int(i.x / 50)] = 3

@@ -1,2 +1,3 @@
-level: 0 passed, time: 1634473470.1023428 seconds, kills: 0 
-level: 0 passed, time: 1634473742.0168 seconds, kills: 0 
+level: 0 passed, time: 1634474570.543197 seconds, kills: 0 
+level: 0 passed, time: 1634474684.155778 seconds, kills: 0 
+level: 1 lost, time: 38.37859082221985 seconds, kills: 6 

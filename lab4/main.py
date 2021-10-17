@@ -123,17 +123,17 @@ def main():
             # print("aaaaaaa")
             # for i in Algorytms.matrix:
             #     print(*i)
-            Tre = Algorytms.Tree
+            workingTree = Algorytms.Tree
             print(Algorytms.enemyArray)
-            Tre.createTree(Tre)
+            workingTree.createTree(workingTree)
 
-            Tre.current = Tre.startNode
+            workingTree.current = workingTree.startNode
 
-            Algorytms.emtyVisitMatrix()
+            Algorytms.fill0()
 
-            Tre.setPriceInTree(Tre)
+            workingTree.setRate(workingTree)
 
-            Tre.current = Tre.startNode
+            workingTree.current = workingTree.startNode
 
         Algorytms.moveEnemy()
         Algorytms.enemyArray = []
