@@ -63,10 +63,10 @@ class Player(Ship):
             else: #kill enemy
                 for obj in objs:
                     if projectile.collision(obj):
-                        # obj.health -= 10
-                        # if obj.health <= 0:
-                        objs.remove(obj)
-                        GV.kills += 1
+                        obj.health -= 10
+                        if obj.health <= 0:
+                            objs.remove(obj)
+                            GV.kills += 1
                         if projectile in self.projectiles:
                             self.projectiles.remove(projectile)
 
@@ -100,13 +100,13 @@ class Enemy(Ship):
             self.projectiles.append(projectile)
             self.cool_down_counter = 1
 
-    # def enemyhealthbar(self, window):
-    #     GV.PG_LIB.draw.rect(window, (255, 0, 0),
-    #                      (self.x, self.y + self.ship_img.get_height() + 10, self.ship_img.get_width(), 10))
-    #     GV.PG_LIB.draw.rect(window, (0, 255, 0), (
-    #     self.x, self.y + self.ship_img.get_height() + 10, self.ship_img.get_width() * (self.health / self.max_health),
-    #     10))
-    #
-    # def draw(self, window):
-    #     super().draw(window)
-    #     self.enemyhealthbar(window)
+    def enemyhealthbar(self, window):
+        GV.PG_LIB.draw.rect(window, (255, 0, 0),
+                         (self.x, self.y + self.ship_img.get_height() + 10, self.ship_img.get_width(), 10))
+        GV.PG_LIB.draw.rect(window, (0, 255, 0), (
+        self.x, self.y + self.ship_img.get_height() + 10, self.ship_img.get_width() * (self.health / self.max_health),
+        10))
+
+    def draw(self, window):
+        super().draw(window)
+        self.enemyhealthbar(window)

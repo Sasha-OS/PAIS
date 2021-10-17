@@ -22,8 +22,11 @@ enemies = findEnemies()
 
 class Node():
     point = 0
+    #arr of nearest points
     nodes = []
+    #current node
     coords = []
+    #coords of higher node
     father = []
 
     def __init__(self, point=0, coords=None, nodes=None):
@@ -51,13 +54,13 @@ def fill0():
 
 
 def getStartCoords():
-    if startGame and gv.GOOD_SHIP:
-        return [int(gv.GOOD_SHIP.y / 50), int(gv.GOOD_SHIP.x / 50)]
+    if startGame and gv.player:
+        return [int(gv.player.y / 50), int(gv.player.x / 50)]
     else:
         return [13, 7]
 
 
-def getNearNodes(coords=None):
+def setClosestNode(coords=None):
     ans = []
     buff = []
     if coords is None:
@@ -149,30 +152,31 @@ def moveEnemy():
 
 
 class Tree:
-    startNode = Node(1, getStartCoords(), getNearNodes())
+    startNode = Node(1, getStartCoords(), setClosestNode())
     current = startNode
     before = []
 
+#main part of alg
     def createTree(self):
         for i in self.current.nodes:
             self.before = self.current
             self.current.father = self.before
             self.current = i
-            self.current.nodes = getNearNodes(self.current.coords)
+            self.current.nodes = setClosestNode(self.current.coords)
             if self.current.nodes:
                 self.createTree(self)
 
-    def Unvisited(self):
+    def free(self):
         if self.current.nodes:
             for i in self.current.nodes:
                 if visited[i.coords[0]][i.coords[1]] == 1:
                     return False
         return True
-
+    #alpha-beta
     def setRate(self):
         global max
         checker = True
-        if self.current.nodes and self.Unvisited(self):
+        if self.current.nodes and self.free(self):
             for i in self.current.nodes:
                 if matrix[i.coords[0]][i.coords[1]] >= matrix[self.current.coords[0]][self.current.coords[1]] + \
                         self.current.coords[0] * self.current.coords[1]:
@@ -180,6 +184,7 @@ class Tree:
                     checker = False
                 if not [i.coords[0], i.coords[1]] in enemies and checker:
                     if max and matrix[i.coords[0]][i.coords[1]] != 2:
+                        #set rate
                         matrix[i.coords[0]][i.coords[1]] += (
                                 matrix[self.current.coords[0]][self.current.coords[1]] + self.current.coords[0] *
                                 self.current.coords[1])

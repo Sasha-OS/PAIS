@@ -44,23 +44,19 @@ def main():
             GV.lost_count += 1
 
         if GV.lost:
-            if GV.lost_count > GV.FPS * 3:
-                run = False
-                with open('report.txt', 'a') as the_file:
-                    the_file.write(
-                        f'level: {GV.level} lost, time: {time.time() - GV.time} seconds, kills: {GV.kills} \n')
-            else:
-                continue
+            run = False
+            #need to fix bug
+            # if GV.lost_count > GV.FPS * 3:
+            #     with open('report.txt', 'a') as the_file:
+            #         the_file.write(
+            #             f'level: {GV.level} lost, time: {time.time() - GV.time} seconds, kills: {GV.kills} \n')
+            # else:
+            #     continue
 
         if len(GV.enemies) == 0:
-            if GV.level != 1:
-                with open('report.txt', 'a') as the_file:
-                    the_file.write(
-                        f'level: {GV.level} passed, time: {time.time() - GV.time} seconds, kills: {GV.kills} \n')
 
             GV.level += 1
             GV.wave_length += 5
-            GV.time = time.time()
             #spawn enemies
             for i in range(GV.wave_length):
                 enemy = GV.SC.Enemy(GV.random.randrange(100, GV.WIDTH-150), GV.random.randrange(-1500, -100), GV.random.choice(["red", "blue", "green"]))
@@ -68,7 +64,6 @@ def main():
             for i in range(GV.wave_length):
                 asteroid = GV.AsteroidClass.Asteroid(GV.random.randrange(100, GV.WIDTH-100), GV.random.randrange(-1500, -100))
                 GV.asteroids.append(asteroid)
-
         for event in GV.PG_LIB.event.get():
             if event.type == GV.PG_LIB.QUIT:
                 run = False
@@ -84,7 +79,7 @@ def main():
             GV.player.y += GV.player_speed
 
         GV.player.shoot()
-
+        GV.time = time.time()
         for enemy in GV.enemies[:]:
 
             enemy.move(GV.enemy_speed)
@@ -120,9 +115,7 @@ def main():
         if Algorytms.enemyArray:
             Algorytms.emptyMatrix(Algorytms.visited, [int(GV.player.y / 50), int(GV.player.x / 50)])
             Algorytms.emptyMatrix(Algorytms.matrix, [int(GV.player.y / 50), int(GV.player.x / 50)])
-            # print("aaaaaaa")
-            # for i in Algorytms.matrix:
-            #     print(*i)
+
             workingTree = Algorytms.Tree
             print(Algorytms.enemyArray)
             workingTree.createTree(workingTree)
@@ -130,14 +123,16 @@ def main():
             workingTree.current = workingTree.startNode
 
             Algorytms.fill0()
-
             workingTree.setRate(workingTree)
 
             workingTree.current = workingTree.startNode
+            for i in Algorytms.matrix:
+                print(*i)
 
         Algorytms.moveEnemy()
         Algorytms.enemyArray = []
         redraw_window()
+
 
 def main_menu():
     title_font = GV.PG_LIB.font.SysFont("comicsans", 70)
