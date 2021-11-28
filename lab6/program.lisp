@@ -36,7 +36,7 @@
         (parse-integer (caddr it))
 )
 
-(defvar workDataTaskOne
+(defvar workData
   (map 'list (lambda (it) (firstSecondElement it)) (cdr datacsv))
 )
 
@@ -50,7 +50,7 @@
 )
 
 
-(print workDataTaskOne)
+(print workData)
 (print workDataTwo)
 (print workDataThree)
 
@@ -61,7 +61,7 @@
       (* (car a) (car b))
       (multiply (cdr a) (cdr b)))))
 
-(defvar ans (multiply workDataTaskOne workDataTwo))
+(defvar ans (multiply workData workDataTwo))
 
 (print ans)
 
@@ -73,10 +73,19 @@
   (if (eq a nil)
       0
     (+
-      (square (* (car a) (car b)))
-      (multiply (cdr a) (cdr b)))))
+      (* (car a) (car b))
+      (multiplyTwo (cdr a) (cdr b)))))
 
 
-(defvar ansTwo (multiplyTwo workDataTaskOne workDataThree))
+(defvar ansTwo (multiplyTwo workData workDataThree))
 
-(print ansTwo)
+(defun disp (a b)
+(if (eq a nil)
+	0     
+     (+
+       (square(- (car a) b))
+      (disp (cdr a) b)))
+)
+(defvar ansAns (disp workData ansTwo))
+
+(print (/ ansAns (length workData)))
